@@ -1,0 +1,212 @@
+<html lang="en" charset="utf-8">
+  <head>
+    <title>Dashboard</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+
+    <script src="https://code.highcharts.com/modules/heatmap.js"></script>
+
+    <script>
+        // console.log('hola')
+        // console.log('hola2')
+        _grafico_barras_h = {{ grafico_barras_h|safe }}
+        console.log('informacion:', _grafico_barras_h)
+        document.addEventListener('DOMContentLoaded', function () {
+            const chart = Highcharts.chart('container', _grafico_barras_h);
+        });
+
+
+
+    </script>
+
+    <script>
+        _grafico_de_torta = {{ grafico_de_torta|safe }}
+        document.addEventListener('DOMContentLoaded', function () {
+            const chart = Highcharts.chart('container2', _grafico_de_torta);
+        });
+    </script>
+
+    <!--
+    <script>
+        Highcharts.setOptions({
+            colors: Highcharts.map(Highcharts.getOptions().colors, function (color) {
+              return {
+                radialGradient: {
+                  cx: 0.5,
+                  cy: 0.3,
+                  r: 0.7
+                },
+                stops: [
+                  [0, color],
+                  [1, Highcharts.color(color).brighten(-0.3).get('rgb')] // darken
+                ]
+              };
+            })
+          });
+    </script>
+  -->
+
+    <script>
+      _grafico_heat_map = {{ grafico_heat_map|safe }}
+      document.addEventListener('DOMContentLoaded', function () {
+          function getPointCategoryName(point, dimension) {
+            var series = point.series,
+              isY = dimension === 'y',
+              axis = series[isY ? 'yAxis' : 'xAxis'];
+            return axis.categories[point[isY ? 'y' : 'x']];
+          }
+        
+          const chart = Highcharts.chart('container3', {
+
+            chart: {
+              type: 'heatmap',
+              marginTop: 40,
+              marginBottom: 80,
+              plotBorderWidth: 1
+            },
+          
+          
+            title: {
+              text: 'Número de productos enviados, por SKU y Grupo'
+            },
+          
+            xAxis: {
+              categories: ['GRUPO 1', 'GRUPO 2', 'GRUPO 3', 'GRUPO 4', 'GRUPO 5', 'GRUPO 6', 'GRUPO 7', 'GRUPO 8', 'GRUPO 9', 'GRUPO 10', 'GRUPO 11',
+              'GRUPO 12', 'GRUPO 13', 'GRUPO 14', 'GRUPO 15', 'GRUPO 16', 'GRUPO 17 (X)', 'GRUPO 18', 'GRUPO 19', 'GRUPO 20', 'GRUPO 21', 'GRUPO 22', 'GRUPO 23', 'GRUPO 24', 'GRUPO 25', 'GRUPO 26'],
+              max: 25
+            },
+            yAxis: {
+              categories: ['SKU 100', 'SKU 109', 'SKU 110', 'SKU 112', 'SKU 117', 'SKU 118', 'SKU 119', 'SKU 121', 'SKU 125', 'SKU 128', 'SKU 129'],
+              title: null,
+              reversed: true,
+              max: 10,
+            },
+          
+            accessibility: {
+              point: {
+                descriptionFormatter: function (point) {
+                  var ix = point.index + 1,
+                    xName = getPointCategoryName(point, 'x'),
+                    yName = getPointCategoryName(point, 'y'),
+                    val = point.value;
+                  return ix + '. ' + xName + ' sales ' + yName + ', ' + val + '.';
+                }
+              }
+            },
+          
+            colorAxis: {
+              min: 0,
+              minColor: '#FFFFFF',
+              maxColor: Highcharts.getOptions().colors[0]
+            },
+          
+            legend: {
+              align: 'right',
+              layout: 'vertical',
+              margin: 0,
+              verticalAlign: 'top',
+              y: 25,
+              symbolHeight: 280
+            },
+          
+            tooltip: {
+              formatter: function () {
+                return '<b>' + 'Hemos enviado ' + this.point.value + '</b> productos <br><b>' + getPointCategoryName(this.point, 'y') + '</b> hacia el <br></b><b>' + getPointCategoryName(this.point, 'x') + '</b>';
+              }
+            },
+          
+            series: [{
+              name: 'Números de productos enviados por SKU y Grupo',
+              borderWidth: 1,
+              data: _grafico_heat_map,
+              dataLabels: {
+                enabled: true,
+                color: '#000000'
+              }
+            }],
+          
+            responsive: {
+              rules: [{
+                condition: {
+                  maxWidth: 500
+                },
+                chartOptions: {
+                  yAxis: {
+                    labels: {
+                      formatter: function () {
+                        return this.value.charAt(0);
+                      }
+                    }
+                  }
+                }
+              }]
+            }
+          
+          });
+      });
+    </script>
+
+  </head>
+  <body>
+    <!-- Top Bar -->
+    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Dashboard Grupo 17</a>
+      <ul class="navbar-nav px-3">
+      </ul>
+    </nav>
+
+    <div class="container-fluid" style="display: flex; flex-direction: row; font-size: 30px;
+        text-align: center;">
+      <!-- First Chart-->
+      <p></p>
+      <p></p>
+      <div id="container" style="width:50%; height:500px; padding-top: 100px;"></div>  
+
+      <div id="container2" style="width:50%; height:500px; padding-top: 100px;"></div>  
+
+    </div>
+
+    <div class="container-fluid">
+      <!-- Número de productos enviados, por SKU y GRupo-->
+      <p></p>
+      <p></p>
+      <div id="container3"></div> 
+      <p class="highcharts-description">
+        Muestra la cantidad de productos enviados hacia otros grupos i (con i != 17)
+      </p>
+
+    </div>
+
+
+    <div class="container-fluid" style="display: flex; flex-direction: row; font-size: 30px;
+        padding-top: 20px; padding-bottom: 20px; align-items: center; justify-content: center;">
+
+        <div class=card-deck >
+          <!-- First Card -->
+              <div class="card" style="padding: 15px; text-align: center;">
+                  <h5 class="card-title">Vacunas en Bodega</h5>
+                  <p class="card-text">{{tarjeta_resultados}}</p>
+              </div>
+          <!-- Second Card -->
+              <div class="card" style="padding: 15px; text-align: center;">
+                  <h5 class="card-title">Vacunas Fabricadas</h5>
+                  <p class="card-text">{{tarjeta_resultados2}}</p> <!-- Pendiente poner valor bien-->
+              </div>
+          </div>
+    <div>
+  
+  </body>
+</html>
+
+<!---Codigo viejo: 
+{% if data1 %}
+    <ul>
+    {% for elem in data1 %}
+        <li><a>{{elem}}</a></li>    
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>dashboard without data</p>
+{% endif %}
+-->
